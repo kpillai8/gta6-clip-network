@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    env_file: .env
+    volumes: ["./data:/workspace/data"]
+    restart: unless-stopped
+  monitor:
+    build: .
+    command: ["python", "-m", "app.scheduler"]
+    env_file: .env
+    volumes: ["./data:/workspace/data"]
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["python", "-m", "app.worker"]
+    env_file: .env
+    volumes: ["./data:/workspace/data"]
+    restart: unless-stopped
+# SQLite is suitable only for a single worker. For production switch DATABASE_URL
+# to PostgreSQL and mount shared object storage or provision Cloudflare R2.

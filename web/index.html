@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
+  <title>CLIPLINE — Creator Intelligence</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="mark">C<span>·</span></div>
+      <div class="eyebrow">CREATOR CLIPPING OPERATIONS</div>
+      <h1>Make the moment.</h1>
+      <p>Track creator streams, generate rights-cleared highlights and approve short-form clips from one place.</p>
+      <label for="admin-token">Local administrator token</label>
+      <input type="password" id="admin-token" placeholder="Enter APP_ADMIN_TOKEN" autocomplete="off">
+      <button class="button primary wide" id="sign-in">Enter workspace <span>↗</span></button>
+      <p class="auth-note">For the local MVP only. Never expose this token in a public client deployment.</p>
+    </div>
+  </div>
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-symbol">C<span>·</span></span><div><strong>CLIPLINE</strong><small>CREATOR INTELLIGENCE</small></div></div>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <button class="nav-item active" data-tab="overview"><span class="nav-icon">▦</span> Overview</button>
+        <button class="nav-item" data-tab="review"><span class="nav-icon">◫</span> Review queue <span id="review-badge" class="nav-count">0</span></button>
+        <button class="nav-item" data-tab="creators"><span class="nav-icon">◎</span> Creators</button>
+        <button class="nav-item" data-tab="sources"><span class="nav-icon">⇧</span> Source library</button>
+        <button class="nav-item" data-tab="exports"><span class="nav-icon">↗</span> Exports</button>
+      </nav>
+      <div class="sidebar-bottom"><span class="system-dot"></span> LOCAL DEVELOPMENT <button id="sign-out" class="quiet">Sign out</button></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="top-crumb"><span class="muted">Workspace</span><span class="slash">/</span><span id="breadcrumb">Overview</span></div><div class="top-right"><span class="status-chip"><span class="status-pin"></span> MVP v0.2</span><div class="avatar">AD</div></div></header>
+      <div class="content">
+        <section id="page-overview" class="page">
+          <div class="page-heading"><div><div class="eyebrow">YOUR CONTROL CENTER</div><h1>Creator Intelligence <span class="subtle">/ Overview</span></h1><p class="lede">From live signal to publish-ready moments. You control the final call.</p></div><button class="button secondary" id="refresh-dashboard">↻ Refresh dashboard</button></div>
+          <div class="metrics">
+            <div class="metric"><div class="metric-label">MONITORED CREATORS <span>↗</span></div><div class="metric-value" id="metric-creators">—</div><div class="metric-footer">Configured and tracked profiles</div></div>
+            <div class="metric"><div class="metric-label">LIVE STREAMS <span class="pulse"></span></div><div class="metric-value" id="metric-live">—</div><div class="metric-footer">From latest metadata check</div></div>
+            <div class="metric"><div class="metric-label">AWAITING REVIEW <span>◫</span></div><div class="metric-value" id="metric-review">—</div><div class="metric-footer">AI-assisted clip candidates</div></div>
+            <div class="metric"><div class="metric-label">APPROVED <span>✓</span></div><div class="metric-value" id="metric-approved">—</div><div class="metric-footer">Export-ready clips</div></div>
+          </div>
+          <div class="two-columns">
+            <div class="panel"><div class="panel-head"><div><div class="eyebrow">PRODUCTION PIPELINE</div><h2>Your workflow</h2></div><span class="pill neutral">LOCAL MODE</span></div>
+              <div class="workflow"><div class="workflow-step"><div class="step-number">01</div><div><strong>Listen for moments</strong><p>Monitor public creator activity through approved APIs.</p></div><span class="step-right">METADATA</span></div><div class="workflow-step"><div class="step-number">02</div><div><strong>Process cleared footage</strong><p>Upload an authorized source recording. Workers score and render highlights.</p></div><span class="step-right">WORKER</span></div><div class="workflow-step"><div class="step-number">03</div><div><strong>Make the call</strong><p>Preview, review rights, approve, reject or request changes.</p></div><span class="step-right">YOU</span></div><div class="workflow-step"><div class="step-number">04</div><div><strong>Ready for distribution</strong><p>Export approved files. API posting remains disconnected.</p></div><span class="step-right">EXPORT</span></div></div>
+              <button class="button primary" data-go="sources">Add authorized footage <span>↗</span></button>
+            </div>
+            <div class="panel status-panel"><div class="panel-head"><div><div class="eyebrow">INTEGRATION STATUS</div><h2>System health</h2></div><span class="circle-icon">◈</span></div><div id="integrations"></div><div class="note">No source video is downloaded from a creator's stream. Monitoring tracks metadata only until usage rights are documented.</div></div>
+          </div>
+          <div class="panel lower-panel"><div class="panel-head"><div><div class="eyebrow">PRIORITY WATCHLIST</div><h2>Creator watchlist</h2></div><button class="text-action" data-go="creators">Manage creators →</button></div><div id="overview-creators" class="creator-grid"></div></div>
+        </section>
+        <section id="page-review" class="page hidden">
+          <div class="page-heading"><div><div class="eyebrow">THE FINAL CHECKPOINT</div><h1>Review queue</h1><p class="lede">Every cut is ready for your judgment. No video publishes without approval.</p></div><button class="button secondary" id="refresh-review">↻ Refresh</button></div>
+          <div class="filterbar"><button class="filter active" data-clip-filter="pending_review">Pending review</button><button class="filter" data-clip-filter="approved">Approved</button><button class="filter" data-clip-filter="rejected">Rejected</button><button class="filter" data-clip-filter="all">All clips</button></div>
+          <div id="review-content" class="review-layout"></div>
+        </section>
+        <section id="page-creators" class="page hidden">
+          <div class="page-heading"><div><div class="eyebrow">MONITORING NETWORK</div><h1>Creators</h1><p class="lede">Stream metadata monitoring. Monitoring does not provide reuse rights.</p></div><button class="button primary" id="check-live">↻ Check live activity</button></div>
+          <div class="panel"><div class="panel-head"><div><div class="eyebrow">ACCOUNT CONFIGURATION</div><h2>Tracking list</h2></div><span class="pill neutral">TWITCH + YOUTUBE</span></div><div id="creator-list"></div></div>
+          <div class="panel lower-panel"><div class="panel-head"><h2>Add a creator</h2></div><form id="add-creator-form" class="form-grid"><label>Display name<input name="name" placeholder="Creator name" required minlength="2"></label><label>Twitch username<input name="twitch_login" placeholder="Exact channel login"></label><label>YouTube channel ID<input name="youtube_channel_id" placeholder="UC... (not URL)"></label><button class="button primary align-end" type="submit">Add creator</button></form></div>
+          <div class="note free-note">For monitoring, configure Twitch Client ID/Secret or YouTube API Key in your server environment. YouTube search queries consume platform quota.</div>
+        </section>
+        <section id="page-sources" class="page hidden">
+          <div class="page-heading"><div><div class="eyebrow">RIGHTS-FIRST INGESTION</div><h1>Source library</h1><p class="lede">Only upload recordings you own or are specifically authorized to edit and redistribute.</p></div></div>
+          <div class="two-columns upload-columns"><div class="panel"><div class="panel-head"><div><div class="eyebrow">ADD SOURCE</div><h2>Upload approved footage</h2></div><span class="pill green">RIGHTS GATED</span></div>
+            <form id="upload-form" class="stacked-form">
+              <label>Video file (.mp4, .mov, .mkv, .webm)<input name="file" type="file" accept="video/mp4,video/quicktime,video/x-matroska,video/webm" required></label>
+              <label>Creator attribution (optional)<select id="source-creator" name="creator_id"><option value="">Unassigned / self-owned</option></select></label>
+              <label>Rights basis<select name="rights_basis"><option value="self_owned">I own this footage</option><option value="licensed">Licensed by rights holder</option><option value="public_domain">Verified public domain</option><option value="other_authorized">Other documented permission</option></select></label>
+              <label>Rights holder<input name="rights_holder" required placeholder="Legal owner or licensing party"></label>
+              <label>Permission evidence / reference<textarea name="rights_evidence" required minlength="10" rows="3" placeholder="E.g. original recording by me, or explicit written license dated YYYY-MM-DD permitting edits and TikTok/Instagram redistribution."></textarea></label>
+              <div class="input-group"><label class="small-checkbox"><input type="checkbox" name="rights_tiktok" checked> TikTok permitted</label><label class="small-checkbox"><input type="checkbox" name="rights_instagram" checked> Instagram permitted</label></div>
+              <label>Optional expiration (ISO date)<input type="date" name="rights_expires_at"></label>
+              <label>Original source URL (optional)<input name="source_url" type="url" placeholder="https://..."></label>
+              <label class="small-checkbox"><input type="checkbox" id="rights-affirmation" required> I confirm that these rights are accurate, including editing and redistribution permissions.</label>
+              <button class="button primary wide" id="upload-button" type="submit">Upload and queue analysis <span>↗</span></button>
+              <div class="tiny">Videos are stored locally for this MVP. The app records your rights declaration; it does not independently verify the license.</div>
+            </form>
+          </div><div class="panel"><div class="panel-head"><div><div class="eyebrow">INGESTION LOG</div><h2>Recent sources</h2></div></div><div id="assets-content"></div><div class="panel-head spaced"><div><div class="eyebrow">PROCESSING</div><h2>Job queue</h2></div></div><div id="jobs-content"></div></div></div>
+        </section>
+        <section id="page-exports" class="page hidden">
+          <div class="page-heading"><div><div class="eyebrow">CONTENT DISTRIBUTION</div><h1>Export center</h1><p class="lede">Approved clips with per-platform posting plans and captions. Direct publishing remains disconnected.</p></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="eyebrow">APPROVED AND CLEARED</div><h2>Publishing plans</h2></div><span class="pill amber">MANUAL POSTING</span></div><div id="export-content"></div></div>
+        </section>
+      </div>
+    </main>
+    <nav class="mobile-nav" aria-label="Mobile navigation"><button class="mobile-item active" data-tab="overview"><span>▦</span>Home</button><button class="mobile-item" data-tab="review"><span>◫</span>Review</button><button class="mobile-item" data-tab="creators"><span>◎</span>Creators</button><button class="mobile-item" data-tab="sources"><span>⇧</span>Sources</button><button class="mobile-item" data-tab="exports"><span>↗</span>Exports</button></nav>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
